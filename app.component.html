@@ -1,0 +1,74 @@
+<div class="container mt-3">
+  <div class="mb-3">
+    <input type="text"class="form-control"placeholder="Search by any field..."[(ngModel)]="filterQuery"(input)="applyFilters()"/>
+  </div>
+    <button class="btn btn-primary" (click)="openRegistrationForm()">Open Registration Form</button>
+    <div>
+      <button class="btn btn-secondary" (click)="sortAllData('asc')">Sort Asc</button>
+      <button class="btn btn-secondary" (click)="sortAllData('desc')">Sort Desc</button>
+    </div>
+
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Father's Name</th>
+        <th>Gender</th>
+        <th>Date of Birth</th>
+        <th>Department</th>
+        <th>Address</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of paginatedData; let i = index">
+        <td>{{ student.name }}</td>
+        <td>{{ student.fatherName }}</td>
+        <td>{{ student.gender }}</td>
+        <td>{{ student.dob }}</td>
+        <td>{{ student.department }}</td>
+        <td>{{ student.address }}</td>
+        <td>{{ student.email }}</td>
+        <td>{{ student.password }}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" (click)="editStudent(i)">Edit</button>
+          <button class="btn btn-danger btn-sm" (click)="deleteStudent(i)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <div *ngIf="isModalOpen" class="modal fade show" style="display: block;">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Student Registration</h5>
+          <button type="button" class="close"(click)="closeRegistrationForm()"aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <app-registrationapp [studentToEdit]="studentToEdit"(onSubmitStudent)="addOrUpdateStudent($event)"(onClose)="closeRegistrationForm()">
+          </app-registrationapp>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav *ngIf="studentData.length > itemsPerPage">
+    <ul class="pagination">
+      <li class="page-item" [class.disabled]="currentPage === 1"(click)="changePage(currentPage - 1)">
+        <a class="page-link">Previous</a>
+      </li>
+      <li class="page-item" *ngFor="let page of [].constructor(Math.ceil(filteredData.length / itemsPerPage)) | keys; let i = index" [class.active]="currentPage === i + 1" (click)="changePage(i + 1)">
+        <a class="page-link">{{ i + 1 }}</a>
+      </li>
+      <li class="page-item"[class.disabled]="currentPage === Math.ceil(filteredData.length / itemsPerPage)"(click)="changePage(currentPage + 1)">
+        <a class="page-link">Next</a>
+      </li>
+    </ul>
+  </nav>
